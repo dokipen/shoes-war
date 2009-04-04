@@ -23,7 +23,7 @@ $: << File.join(BASE, '..')
 
 class Card < Widget
   XY_RATIO = 0.6872
-  HEIGHT = 100
+  HEIGHT = 150
   WIDTH = (HEIGHT * XY_RATIO).to_i
   # if you define width, do this
   # HEIGHT = (WIDTH / XY_RATIO).to_i
@@ -97,6 +97,8 @@ end
 Shoes.app do
   background "#555"
   @title = "War!"
+  @you = War::Player.new "You"
+  @her = War::Player.new "Her"
 
   def reset_game
     @you = War::Player.new "You"
@@ -118,8 +120,8 @@ Shoes.app do
     trick = @game.play
 
     [
-      [@play_spot, trick["You"][:cards]], 
-      [@opp_spot, trick["Her"][:cards]]
+      [@play_spot, trick[@you.name][:cards]], 
+      [@opp_spot, trick[@her.name][:cards]]
     ].each do |slot, cards|
       slot.clear do
         cards.each do |c|
@@ -139,10 +141,10 @@ Shoes.app do
 
     @result.clear do
       background '#333', :curve => 4
-      warstring = "WAR! " * (trick["You"][:cards].size / 4)
+      warstring = "WAR! " * (trick[@you.name][:cards].size / 4)
       caption "#{warstring}Trick Winner: #{trick[:winner]}", :stroke => "#CD9", :margin => 4
       if trick[:game_over]
-        if trick[:winner] == "You"
+        if trick[:winner] == @you.name 
           alert("You won!")
         else
           alert("She won :(")
@@ -153,6 +155,17 @@ Shoes.app do
   end
 
   stack :margin => 10 do
+    flow do
+      button("New Game") { reset_game }
+      button("Rules") do
+            alert <<-"RULES" 
+1. High card takes the trick
+2. Cards are dealt from the play pile.  Won tricks are placed in a second pile called the won pile.  When the play pile is empty, the won pile is shuffled and becomes the play pile.
+3. If you a player runs out of cards during a war, without completing the war, they lose the game.
+            RULES
+      end
+      button("Quit") { quit }
+    end
     title strong(@title), :align => "center", :stroke => "#DFA", :margin => 0
 
     stack :width => "100%", :margin => 10 do
@@ -162,26 +175,16 @@ Shoes.app do
       flow :margin => 10 do
         # Your side
         stack :margin_top => 25, :margin_right => 25, :width => Card::WIDTH+50 do
-          caption "You", :align => 'left'
-          card :row => :back, :column => :back
+          caption @you.name, :stroke => "#CD9", :margin => 4
+          @c = card :row => :back, :column => :back
+          @c.click { play_trick }
           @you_count = stack do
             caption '26 cards', :stroke => "#CD9", :margin => 4
-          end
-          button("Play") { play_trick }
-          para
-          button("New Game") { reset_game }
-          button("Quit") { quit }
-          button("Rules") do
-            alert <<-"RULES" 
-1. High card takes the trick
-2. Cards are dealt from the play pile.  Won tricks are placed in a second pile called the won pile.  When the play pile is empty, the won pile is shuffled and becomes the play pile.
-3. If you a player runs out of cards during a war, without completing the war, they lose the game.
-            RULES
           end
         end
 
         # Play space
-        stack :width => Card::WIDTH*5-20 do
+        stack :width => Card::WIDTH*4 do
           flow :align => 'center' do
             @play_spot = stack :margin => 25, :margin_left => 50, :width => Card::WIDTH+75 #, :height => Card::HEIGHT*5+50
             @opp_spot = stack :margin => 25, :margin_left => 50, :width => Card::WIDTH+75 #, :height => Card::HEIGHT*5+50
@@ -190,7 +193,7 @@ Shoes.app do
 
         # Her side
         stack :margin_top => 25, :margin_left => 25, :width => Card::WIDTH+50 do
-          caption "Her", :align => 'left'
+          caption @her.name, :stroke => "#CD9", :margin => 4
           card :row => :back, :column => :back
           @her_count = stack do
             caption '26 cards', :stroke => "#CD9", :margin => 4
