@@ -18,7 +18,7 @@ License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 =end
 require 'war'
-BASE = File.expand_path(File.join(File.dirname(__FILE__), '..')
+BASE = File.expand_path(File.join(File.dirname(__FILE__), '..'))
 $: << File.join(BASE, '..')
 
 class Card < Widget
