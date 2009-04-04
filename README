@@ -1,0 +1,9 @@
+= Shoes WAR! =
+
+A simple war card game implemented with shoes and ruby.
+
+cards.png is a derivitive of SVG-cards-2.0.1.  See SVG-cards-2.0.1/COPYING for licence details. 
+
+= Running =
+
+If shoes is on your PATH, then bin/shoes-war should start the app.  If not, it's $shoes-exe lib/shoes-war.rb .
