@@ -1,0 +1,4 @@
+#!/bin/sh
+base=`dirname $0`/..
+shoes "${base}/lib/shoes-war.rb"
+
