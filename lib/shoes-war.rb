@@ -17,11 +17,12 @@ Lesser General Public License for more details.
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
 =end
-require 'war'
 BASE = File.expand_path(File.join(File.dirname(__FILE__), '..'))
-$: << File.join(BASE, '..')
+$: << File.join(BASE, 'lib')
 
-class Card < Widget
+require 'war'
+
+class Card < Shoes::Widget
   XY_RATIO = 0.6872
   HEIGHT = 150
   WIDTH = (HEIGHT * XY_RATIO).to_i
@@ -114,6 +115,7 @@ Shoes.app do
       background "#333", :curve => 4
       caption 'Let\'s play some War!', :stroke => "#CD9", :margin => 4
     end
+    [@play_spot, @opp_spot].each {|s| s.clear}
   end
 
   def play_trick
@@ -207,6 +209,10 @@ Shoes.app do
     case k
     when 'q'
       quit
+    when ' '
+      play_trick
+    when :enter
+      play_trick
     end
   end
 
