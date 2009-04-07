@@ -167,10 +167,10 @@ module War
       }
       p1, p2 = _play_card win_cards, round
       case p1 <=> p2
-      when 1:
+      when 1
         round[:winner] = @player1.name
         @player1.take win_cards
-      when -1:
+      when -1
         round[:winner] = @player2.name
         @player2.take win_cards
       else
